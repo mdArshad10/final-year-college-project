@@ -9,12 +9,15 @@ import time
 
 st.set_page_config(layout='wide',page_title='Home | Book Recommendation')
 
-
-
 st.title("Book Recommendation")
 
-tab1, tab2, tab3 = st.tabs(["Home", "Top-50 Books", "Recommended Books"])
+data_df = pickle.load(open("popular_movie.pkl","rb"))
+book_name = list(data_df["Book-Title"].values)
+book_url = list(data_df["Image-URL-M"].values)
+book_author = list(data_df["Book-Author"].values)
+book_rating = list(data_df["avg-rating"].values)
 
+tab1, tab2, tab3 = st.tabs(["Home", "Top-50 Books", "Recommended Books"])
 
 #! top - 50 Table
 with tab2:
@@ -23,44 +26,45 @@ with tab2:
         col1, col2, col3, col4 = st.columns(4)
         with col1: 
             # book - image 
-            st.image("http://images.amazon.com/images/P/0439136350.01.LZZZZZZZ.jpg", width=200)
+            st.image(book_url[i], width=200)
+            st.text(book_name[i]) 
             # Book Title
-            st.text('Harry Potter and the Prisoner of Azkaban') 
             # Book Author
-            st.text('J. K. Rowling')
-            st.text("Avg. rating: 5.852804")
+            st.text(book_author[i])
+            st.write("Avg. rating: ", book_rating[i])
+            i=i+1
             
         with col2: 
             # book - image 
-            st.image("http://images.amazon.com/images/P/0439136350.01.LZZZZZZZ.jpg", width=200)
+            st.image(book_url[i], width=200)
             # Book Title
-            
+            st.text(book_name[i]) 
 
-            st.text('Harry Potter and the Prisoner of Azkaban') 
             # Book Author
-            st.text('J. K. Rowling')
-            st.text("Avg. rating: 5.852804")
+            st.text(book_author[i])
+            st.write("Avg. rating: ", book_rating[i])
+            i=i+1
         
         with col3: 
             # book - image 
-            st.image("http://images.amazon.com/images/P/0439136350.01.LZZZZZZZ.jpg", width=200)
+            st.image(book_url[i], width=200)
+            st.text( book_name[i]) 
             # Book Title
-            st.text( 'Harry Potter and the Prisoner of Azkaban') 
             # Book Author
-            st.text('J. K. Rowling')
-            st.text("Avg. rating: 5.852804")
+            st.text(book_author[i])
+            st.write("Avg. rating: ", book_rating[i])
+            i=i+1
 
         with col4: 
             # book - image 
-            st.image("http://images.amazon.com/images/P/0439136350.01.LZZZZZZZ.jpg", width=200)
+            st.image(book_url[i], width=200)
             # Book Title
-            st.text(i)
-            i=i+1
-            st.text('Harry Potter and the Prisoner of Azkaban') 
+            st.text(book_name[i]) 
             # Book Author
-            st.text('J. K. Rowling')
+            st.text(book_author[i])
             # Avg Rating
-            st.text("Avg. rating: 5.852804")
+            st.write("Avg. rating: ", book_rating[i])
+            i=i+1
             
 with tab3:
 
