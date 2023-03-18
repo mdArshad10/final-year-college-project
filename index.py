@@ -24,6 +24,8 @@ book_rating = list(data_df["avg-rating"].values)
 def recommend(book_name):
     # index fetch
     index = np.where(pt_df.index == book_name)[0][0]
+    index2 = np.where(pt_df.index == book_name)
+
     similar_items = sorted(list(enumerate(similarity_scores[index])), key= lambda x:x[1], reverse=True)[1:6]
     
     data = []
@@ -41,6 +43,21 @@ def recommend(book_name):
 
 
 tab1, tab2, tab3 = st.tabs(["Home", "Top-50 Books", "Recommended Books"])
+
+with tab1:
+    # Define your introduction text
+    intro = """
+    ## Welcome to the Book Recommendation System!
+
+    Do you struggle to find new books to read? Our book recommendation system is here to help! Using a sophisticated algorithm based on your reading history and preferences, we can recommend books that we think you'll love.
+
+    To get started, simply enter the name of a book you've enjoyed in the past, and our system will generate a list of similar books that we think you'll enjoy. You can also browse our curated lists of books by genre, author, and more.
+
+    So what are you waiting for? Start exploring our book recommendation system today and discover your next favorite read!
+    """
+
+    # Display the introduction text using Streamlit
+    st.markdown(intro)
 
 #! top - 50 Table
 with tab2:
@@ -80,12 +97,11 @@ with tab2:
             
 with tab3:
 
-    title = st.selectbox(
-    "Type or select a Book Title from the dropdown",book_name)
-
+    # it return any things
+    bk_title = st.text_input('Book title', placeholder="eg. To Kill a Mockingbird")
     if st.button('Recommended Book'):
-        if(title):
-            recommended_books = recommend(title)
+        if(bk_title):
+            recommended_books = recommend(bk_title)
             with st.spinner('Wait for it...'):
                 time.sleep(1)
                 col1, col2, col3 = st.columns(3)
@@ -96,8 +112,7 @@ with tab3:
                     st.text(recommended_books[0][0]) 
                     # Book Author
                     st.text(recommended_books[0][1])
-                    
-                    
+                     
                 with col2: 
                     # book - image 
                     st.image(recommended_books[1][2], width=200)
@@ -134,7 +149,6 @@ with tab3:
                     # Book Author
                     st.text(recommended_books[4][1])
                     
-
         else:
             st.error('Enter the moive title', icon="🚨")
             
