@@ -8,7 +8,7 @@ import time
 
 st.set_page_config(layout='wide',page_title='Home | Book Recommendation')
 
-st.title("Book Recommendation")
+st.title("Book Recommendation v1.0.0")
 
 data_df = pickle.load(open("popular_movie.pkl","rb"))
 pt_df = pickle.load(open("pt_df.pkl","rb"))
