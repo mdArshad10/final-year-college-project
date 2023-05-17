@@ -10,36 +10,45 @@ st.set_page_config(layout='wide',page_title='Home | Book Recommendation')
 
 st.title("Book Recommendation v1.0.0")
 
-data_df = pickle.load(open("popular_movie.pkl","rb"))
+data_df = pickle.load(open("popular.pkl","rb"))
 pt_df = pickle.load(open("pt_df.pkl","rb"))
 books = pickle.load(open("books.pkl","rb"))
 
 similarity_scores = cosine_similarity(pt_df)
 
 book_name = list(data_df["Book-Title"].values)
-book_url = list(data_df["Image-URL-L"].values)
+book_url = list(data_df["Image-URL-S"].values)
 book_author = list(data_df["Book-Author"].values)
 book_rating = list(data_df["avg-rating"].values)
 
-def recommend(book_name):
+isError = False
+# book recommendation for new book
+def recommendBook(book_name):
     # index fetch
-    index = np.where(pt_df.index == book_name)[0][0]
-    index2 = np.where(pt_df.index == book_name)
+    # print(np.where(pt.index == book_name)[0]==[])
+    if np.where(pt_df.index == book_name)[0]:
+      # if book recommendation is present
+      index = np.where(pt_df.index == book_name)[0][0]
+      similar_items = sorted(list(enumerate(similarity_scores[index])), key= lambda x:x[1], reverse=True)[1:6]  
+      data = []
+      for i in similar_items:
+        # print(pt.index[i[0]])
+        item = []
+        temp_df = books[books['Book-Title'] == pt_df.index[i[0]]]
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Title'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Author'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Image-URL-M'].values))
 
-    similar_items = sorted(list(enumerate(similarity_scores[index])), key= lambda x:x[1], reverse=True)[1:6]
-    
-    data = []
-    for i in similar_items:
-      item = []
-      temp_df = books[books['Book-Title'] == pt_df.index[i[0]]]
-      item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Title'].values))
-      item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Author'].values))
-      item.extend(list(temp_df.drop_duplicates('Book-Title')['Image-URL-M'].values))
-
-      data.append(item)
-    
-    return data
-
+        data.append(item)
+      
+      return data
+    else:
+      # if book is empty then it is not return 
+      # top 5 books
+      global isError 
+      isError = True
+      st.text("the book is not found")
+      return data_df.sample(5)
 
 
 tab1, tab2, tab3 = st.tabs(["Home", "Top-50 Books", "Recommended Books"])
@@ -100,8 +109,8 @@ with tab3:
     # it return any things
     bk_title = st.text_input('Book title', placeholder="eg. To Kill a Mockingbird")
     if st.button('Recommended Book'):
-        if(bk_title):
-            recommended_books = recommend(bk_title)
+        recommended_books = recommendBook(bk_title)
+        if(bk_title and (isError == False)):
             with st.spinner('Wait for it...'):
                 time.sleep(1)
                 col1, col2, col3 = st.columns(3)
@@ -149,8 +158,58 @@ with tab3:
                     # Book Author
                     st.text(recommended_books[4][1])
                     
+        elif isError != False:
+            with st.spinner('Wait for it...'):
+                time.sleep(1)
+                col1, col2, col3 = st.columns(3)
+                with col1: 
+                    # book - image 
+                    st.image(recommended_books["Image-URL-S"].values[0], width=200)
+                    # Book Title
+                    st.text(recommended_books["Book-Title"].values[0]) 
+                    # Book Author
+                    st.text(recommended_books["Book-Author"].values[0])
+                     
+                with col2: 
+                   # book - image 
+                    st.image(recommended_books["Image-URL-S"].values[1], width=200)
+                    # Book Title
+                    st.text(recommended_books["Book-Title"].values[1]) 
+                    # Book Author
+                    st.text(recommended_books["Book-Author"].values[1])
+                    
+                
+                with col3: 
+                   # book - image 
+                    st.image(recommended_books["Image-URL-S"].values[2], width=200)
+                    # Book Title
+                    st.text(recommended_books["Book-Title"].values[2]) 
+                    # Book Author
+                    st.text(recommended_books["Book-Author"].values[2])
+
+                col1, col2 = st.columns(2)
+                with col1: 
+                    # book - image 
+                    st.image(recommended_books["Image-URL-S"].values[3], width=200)
+                    # Book Title
+                    st.text(recommended_books["Book-Title"].values[3]) 
+                    # Book Author
+                    st.text(recommended_books["Book-Author"].values[3])
+                    
+                    
+                with col2: 
+                    # book - image 
+                    # book - image 
+                    st.image(recommended_books["Image-URL-S"].values[4], width=200)
+                    # Book Title
+                    st.text(recommended_books["Book-Title"].values[4]) 
+                    # Book Author
+                    st.text(recommended_books["Book-Author"].values[4])
+
+
         else:
             st.error('Enter the moive title', icon="🚨")
-            
+        
+        
 
 
